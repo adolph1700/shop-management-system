@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Signup.css";
 
 const API_URL = "http://localhost:8080/user/signup";
 
@@ -16,6 +17,7 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
@@ -37,9 +39,9 @@ const Signup = () => {
           passwordHash: formData.password
         })
       });
-      console.log(response.json())
 
       const result = await response.json();
+      console.log(result);
 
       if (!response.ok) {
         throw new Error(result.message || "Signup failed");
@@ -53,7 +55,7 @@ const Signup = () => {
         email: "",
         phoneNumber: "",
         password: "",
-        role: "USER"
+        role: "CUSTOMER"
       });
     } catch (error) {
       setErrorMessage(error.message);
@@ -63,31 +65,103 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <h2>Create Account</h2>
+    <div className="signup-wrapper">
+      <div className="background-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+        <div className="shape shape-3"></div>
+      </div>
+      
+      <div className="signup-container">
+        <div className="signup-header">
+          <h2>Create Account</h2>
+          <p>Join us and manage your shop efficiently</p>
+        </div>
 
-      {successMessage && <p className="success">{successMessage}</p>}
-      {errorMessage && <p className="error">{errorMessage}</p>}
+        {successMessage && <div className="message success">{successMessage}</div>}
+        {errorMessage && <div className="message error">{errorMessage}</div>}
 
-      <form onSubmit={handleSubmit} noValidate>
-        <Input name="firstName" placeholder="First Name" onChange={handleChange} />
-        <Input name="lastName" placeholder="Last Name" onChange={handleChange} />
-        <Input name="username" placeholder="Username" onChange={handleChange} />
-        <Input type="email" name="email" placeholder="Email" onChange={handleChange} />
-        <Input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} />
-        <Input type="password" name="password" placeholder="Password" onChange={handleChange} />
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="input-group">
+            <Input 
+              name="firstName" 
+              value={formData.firstName} 
+              onChange={handleChange} 
+              label="First Name"
+            />
+            <Input 
+              name="lastName" 
+              value={formData.lastName} 
+              onChange={handleChange} 
+              label="Last Name"
+            />
+          </div>
+          
+          <Input 
+            name="username" 
+            value={formData.username} 
+            onChange={handleChange} 
+            label="Username"
+          />
+          
+          <Input 
+            type="email" 
+            name="email" 
+            value={formData.email} 
+            onChange={handleChange} 
+            label="Email Address"
+          />
+          
+          <Input 
+            name="phoneNumber" 
+            value={formData.phoneNumber} 
+            onChange={handleChange} 
+            label="Phone Number"
+          />
+          
+          <div className="password-container">
+            <Input 
+              type={showPassword ? "text" : "password"} 
+              name="password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              label="Password"
+            />
+            <button 
+              type="button" 
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "👁️" : "👁️‍🗨️"}
+            </button>
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Signing up..." : "Sign Up"}
-        </button>
-      </form>
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? <span className="loader"></span> : "Sign Up"}
+          </button>
+        </form>
+        
+        <div className="signup-footer">
+          <p>Already have an account? <a href="/login">Log in</a></p>
+        </div>
+      </div>
     </div>
   );
 };
 
-/* Reusable Input Component */
-const Input = ({ type = "text", ...props }) => (
-  <input type={type} required {...props} />
+/* Reusable Input Component with Floating Label */
+const Input = ({ type = "text", label, value, ...props }) => (
+  <div className="floating-label-group">
+    <input 
+      type={type} 
+      className="floating-input" 
+      placeholder=" " 
+      value={value}
+      required 
+      {...props} 
+    />
+    <label className="floating-label">{label}</label>
+  </div>
 );
 
 export default Signup;
