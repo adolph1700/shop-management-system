@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class UserSignInService {
+public class UserSignUpService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    public UserSignInService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserSignUpService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
